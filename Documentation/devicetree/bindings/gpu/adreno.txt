@@ -84,7 +84,6 @@ Documentation/devicetree/bindings/coresight/coresight.txt
                          component.
 - coresight-child-ports  List of input port numbers of the children.
 
-
 Example of A330 GPU in MSM8974:
 
 / {
