@@ -126,6 +126,7 @@ struct usb_hcd {
 	unsigned		wireless:1;	/* Wireless USB HCD */
 	unsigned		authorized_default:1;
 	unsigned		has_tt:1;	/* Integrated TT in root hub */
+        unsigned		cant_recv_wakeups:1;
 	unsigned		broken_pci_sleep:1;	/* Don't put the
 			controller in PCI-D3 for system sleep */
 
