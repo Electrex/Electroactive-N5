@@ -937,7 +937,6 @@ void start_tty(struct tty_struct *tty)
 }
 
 EXPORT_SYMBOL(start_tty);
-
 /**
  *	tty_read	-	read method for tty device files
  *	@file: pointer to tty file
