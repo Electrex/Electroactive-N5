@@ -1508,6 +1508,7 @@ struct xhci_hcd {
  *
  * The workaround is to give worst case pipe delay ~350us after resetting HC
  */
+#define XHCI_PME_STUCK_QUIRK	(1 << 20)
 #define XHCI_RESET_DELAY	(1 << 11)
 	unsigned int		num_active_eps;
 	unsigned int		limit_active_eps;
