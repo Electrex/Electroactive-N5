@@ -518,6 +518,12 @@
 #define FTDI_TAVIR_STK500_PID	0xFA33	/* STK500 AVR programmer */
 
 
+/*
+ * Synapse Wireless product ids (FTDI_VID)
+ * http://www.synapse-wireless.com
+ */
+#define FTDI_SYNAPSE_SS200_PID 0x9090 /* SS200 - SNAP Stick 200 */
+
 
 /********************************/
 /** third-party VID/PID combos **/
