@@ -1152,8 +1152,7 @@ static void __exit cpufreq_gov_dbs_exit(void)
 MODULE_AUTHOR("Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>");
 MODULE_AUTHOR("Alexey Starikovskiy <alexey.y.starikovskiy@intel.com>");
 MODULE_DESCRIPTION("'cpufreq_electroactive' - A dynamic cpufreq governor for "
-	"Low Latency Frequency Transition capable processors"
-        "Based off of hyper with more balanced transitions");
+	"Low Latency Frequency Transition capable processors, based off of ondemand");
 MODULE_LICENSE("GPLv2");
 
 #ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_ELECTROACTIVE
