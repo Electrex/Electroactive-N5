@@ -7,7 +7,7 @@
  *
  *                 2012 Minor Edits by Sar Castillo <sar.castillo@gmail.com>
  *                 2012 MAR heavy addons by DORIMANX <yuri@bynet.co.il>
- *                 2015 Minor Edits by HXMR <ymostafa30@gmail.com>
+ *                 2015 Minor Edits by Electrex <ymostafa30@gmail.com>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
