@@ -3049,7 +3049,7 @@ config MSM_HOTPLUG
 	  The MSM hotplug driver controls on-/offlining of additional cores based
 	  on current cpu load.
 	  
-config INTELLI_HOTPLUG
+config INTELLI_PLUG
 	bool "Intelli hotplug driver"
 	depends on HOTPLUG_CPU
 	default y
