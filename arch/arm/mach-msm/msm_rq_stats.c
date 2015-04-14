@@ -152,6 +152,58 @@ static int update_average_load(unsigned int freq, unsigned int cpu)
 	return 0;
 }
 
+#ifdef CONFIG_MSM_RUN_QUEUE_STATS_BE_CONSERVATIVE
+
+static unsigned int report_load_at_max_freq(void)
+{
+	int cpu;
+	struct cpu_load_data *pcpu;
+	uint64_t timed_load = 0;
+	unsigned int max_window_size = 0;
+
+	for_each_online_cpu(cpu) {
+		pcpu = &per_cpu(cpuload, cpu);
+
+		mutex_lock(&pcpu->cpu_load_mutex);
+
+		update_average_load(pcpu->cur_freq, cpu);
+
+		timed_load += ((uint64_t) pcpu->avg_load_maxfreq) * pcpu->window_size;
+		if (pcpu->window_size > max_window_size)
+			max_window_size = pcpu->window_size;
+
+		pcpu->avg_load_maxfreq = 0;
+		mutex_unlock(&pcpu->cpu_load_mutex);
+	}
+
+	if (max_window_size == 0)
+		return 0;
+	else
+		return div_u64(timed_load, max_window_size);
+}
+
+#else
+
+static unsigned int report_load_at_max_freq(void)
+{
+	int cpu;
+	struct cpu_load_data *pcpu;
+	unsigned int total_load = 0;
+
+	for_each_online_cpu(cpu) {
+		pcpu = &per_cpu(cpuload, cpu);
+		mutex_lock(&pcpu->cpu_load_mutex);
+		update_average_load(pcpu->cur_freq, cpu);
+		total_load += pcpu->avg_load_maxfreq;
+		pcpu->avg_load_maxfreq = 0;
+		mutex_unlock(&pcpu->cpu_load_mutex);
+	}
+	return total_load;
+}
+
+#endif
+
+
 static unsigned int report_load_at_max_freq(void)
 {
 	int cpu;
