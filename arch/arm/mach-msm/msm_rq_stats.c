@@ -305,55 +305,21 @@ static ssize_t run_queue_avg_show(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
 #ifdef CONFIG_MSM_RUN_QUEUE_STATS_BE_CONSERVATIVE
-
-static unsigned int report_load_at_max_freq(void)
-{
-	int cpu;
-	struct cpu_load_data *pcpu;
-	uint64_t timed_load = 0;
-	unsigned int max_window_size = 0;
-
-	for_each_online_cpu(cpu) {
-		pcpu = &per_cpu(cpuload, cpu);
-
-		mutex_lock(&pcpu->cpu_load_mutex);
-
-		update_average_load(pcpu->cur_freq, cpu);
-
-		timed_load += ((uint64_t) pcpu->avg_load_maxfreq) * pcpu->window_size;
-		if (pcpu->window_size > max_window_size)
-			max_window_size = pcpu->window_size;
-
-		pcpu->avg_load_maxfreq = 0;
-		mutex_unlock(&pcpu->cpu_load_mutex);
-	}
-
-	if (max_window_size == 0)
-		return 0;
-	else
-		return div_u64(timed_load, max_window_size);
-}
-
+	int nr_running = (avg_nr_running() * 10) >> FSHIFT;
+	return snprintf(buf, PAGE_SIZE, "%d.%d\n", nr_running/10, nr_running%10);
 #else
+	unsigned int val = 0;
+	unsigned long flags = 0;
 
-static unsigned int report_load_at_max_freq(void)
-{
-	int cpu;
-	struct cpu_load_data *pcpu;
-	unsigned int total_load = 0;
+	spin_lock_irqsave(&rq_lock, flags);
+	/* rq avg currently available only on one core */
+	val = rq_info.rq_avg;
+	rq_info.rq_avg = 0;
+	spin_unlock_irqrestore(&rq_lock, flags);
 
-	for_each_online_cpu(cpu) {
-		pcpu = &per_cpu(cpuload, cpu);
-		mutex_lock(&pcpu->cpu_load_mutex);
-		update_average_load(pcpu->cur_freq, cpu);
-		total_load += pcpu->avg_load_maxfreq;
-		pcpu->avg_load_maxfreq = 0;
-		mutex_unlock(&pcpu->cpu_load_mutex);
-	}
-	return total_load;
-}
-
+	return snprintf(buf, PAGE_SIZE, "%d.%d\n", val/10, val%10);
 #endif
+}
 
 static struct kobj_attribute run_queue_avg_attr = __ATTR_RO(run_queue_avg);
 
