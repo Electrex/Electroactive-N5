@@ -365,12 +365,12 @@ __alloc_workqueue_key(const char *fmt, unsigned int flags, int max_active,
 
 extern void destroy_workqueue(struct workqueue_struct *wq);
 
-extern bool queue_work_on(int cpu, struct workqueue_struct *wq,
+extern int queue_work(struct workqueue_struct *wq, struct work_struct *work);
+extern int queue_work_on(int cpu, struct workqueue_struct *wq,
 			struct work_struct *work);
-extern bool queue_work(struct workqueue_struct *wq, struct work_struct *work);
-extern bool queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
+extern int queue_delayed_work(struct workqueue_struct *wq,
 			struct delayed_work *work, unsigned long delay);
-extern bool queue_delayed_work(struct workqueue_struct *wq,
+extern int queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
 			struct delayed_work *work, unsigned long delay);
 extern bool mod_delayed_work_on(int cpu, struct workqueue_struct *wq,
 			struct delayed_work *dwork, unsigned long delay);
