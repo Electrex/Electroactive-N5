@@ -997,18 +997,6 @@ static inline void dec_nr_running(struct rq *rq)
 #endif
 }
 
-static inline void inc_nr_running(struct rq *rq)
-{
-	sched_update_nr_prod(cpu_of(rq), rq->nr_running, true);
-	rq->nr_running++;
-}
-
-static inline void dec_nr_running(struct rq *rq)
-{
-	sched_update_nr_prod(cpu_of(rq), rq->nr_running, false);
-	rq->nr_running--;
-}
-
 extern void update_rq_clock(struct rq *rq);
 
 extern void activate_task(struct rq *rq, struct task_struct *p, int flags);
