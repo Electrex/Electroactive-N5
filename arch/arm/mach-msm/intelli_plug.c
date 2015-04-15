@@ -184,7 +184,7 @@ static void apply_down_lock(unsigned int cpu)
 	struct down_lock *dl = &per_cpu(lock_info, cpu);
 
 	dl->locked = 1;
-	mod_delayed_work_on(0, intelliplug_wq, &dl->lock_rem,
+	queue_delayed_work_on(0, intelliplug_wq, &dl->lock_rem,
 			      msecs_to_jiffies(down_lock_dur));
 }
 
@@ -304,7 +304,7 @@ static void intelli_plug_work_fn(struct work_struct *work)
 	queue_work_on(0, intelliplug_wq, &up_down_work);
 
 	if (atomic_read(&intelli_plug_active) == 1)
-		mod_delayed_work_on(0, intelliplug_wq, &intelli_plug_work,
+		queue_delayed_work_on(0, intelliplug_wq, &intelli_plug_work,
 					msecs_to_jiffies(def_sampling_ms));
 }
 
@@ -361,7 +361,7 @@ static void __ref intelli_plug_resume(struct work_struct *work)
 
 	/* Resume hotplug workqueue if required */
 	if (required_reschedule)
-		mod_delayed_work_on(0, intelliplug_wq, &intelli_plug_work,
+		queue_delayed_work_on(0, intelliplug_wq, &intelli_plug_work,
 				      msecs_to_jiffies(RESUME_SAMPLING_MS));
 }
 
@@ -380,7 +380,7 @@ static void __intelli_plug_suspend(struct early_suspend *handler)
 		return;
 
 	INIT_DELAYED_WORK(&suspend_work, intelli_plug_suspend);
-	mod_delayed_work_on(0, susp_wq, &suspend_work,
+	queue_delayed_work_on(0, susp_wq, &suspend_work,
 				 msecs_to_jiffies(suspend_defer_time * 1000));
 }
 
@@ -616,7 +616,7 @@ static int __ref intelli_plug_start(void)
 		apply_down_lock(cpu);
 	}
 
-	mod_delayed_work_on(0, intelliplug_wq, &intelli_plug_work,
+	queue_delayed_work_on(0, intelliplug_wq, &intelli_plug_work,
 			      START_DELAY_MS);
 
 	return ret;
