@@ -464,6 +464,16 @@ config CPU_FREQ_GOV_UBERDEMAND
 	  The support for this governor depends on CPU capability to
 	  do fast frequency switching (i.e, very low latency frequency
 	  transitions).
+	  
+config CPU_FREQ_GOV_ELECTROACTIVE
+	tristate "'electroactive' cpufreq policy governor"
+        select CPU_FREQ_TABLE
+	help
+	  'electroactive' - A tweaked hybrid interactive + ondemand based smart 
+	   and smooth optimized governor designed for optimization in transition,
+	   performance and power.
+	
+	   If in doubt, say N.
 
 config CPU_FREQ_GOV_HYPER
 	tristate "'hyper' cpufreq governor"
