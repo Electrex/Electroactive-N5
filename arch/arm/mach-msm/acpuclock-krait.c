@@ -46,7 +46,7 @@
 #define PRI_SRC_SEL_HFPLL_DIV2	2
 
 
-/** elementalx defs  **/
+/** electroactive defs  **/
 static int uv_bin = 0;
 static uint32_t arg_max_oc0 = 2265600;
 static uint32_t arg_max_oc1 = 2265600;
@@ -64,7 +64,7 @@ static int __init cpufreq_read_arg_max_oc0(char *max_oc0)
 	err = strict_strtoul(max_oc0, 0, &ui_khz);
 	if (err) {
 		arg_max_oc0 = 2265600;
-		printk(KERN_INFO "[elementalx]: max_oc0='%i'\n", arg_max_oc0);
+		printk(KERN_INFO "[electroactive]: max_oc0='%i'\n", arg_max_oc0);
 		return 1;
 	}
 	
@@ -81,7 +81,7 @@ static int __init cpufreq_read_arg_max_oc1(char *max_oc1)
 	err = strict_strtoul(max_oc1, 0, &ui_khz);
 	if (err) {
 		arg_max_oc1 = 2265600;
-		printk(KERN_INFO "[elementalx]: max_oc1='%i'\n", arg_max_oc1);
+		printk(KERN_INFO "[electroactive]: max_oc1='%i'\n", arg_max_oc1);
 		return 1;
 	}
 	
@@ -98,7 +98,7 @@ static int __init cpufreq_read_arg_max_oc2(char *max_oc2)
 	err = strict_strtoul(max_oc2, 0, &ui_khz);
 	if (err) {
 		arg_max_oc2 = 2265600;
-		printk(KERN_INFO "[elementalx]: max_oc2='%i'\n", arg_max_oc2);
+		printk(KERN_INFO "[electroactive]: max_oc2='%i'\n", arg_max_oc2);
 		return 1;
 	}
 	
@@ -115,7 +115,7 @@ static int __init cpufreq_read_arg_max_oc3(char *max_oc3)
 	err = strict_strtoul(max_oc3, 0, &ui_khz);
 	if (err) {
 		arg_max_oc3 = 2265600;
-		printk(KERN_INFO "[elementalx]: max_oc3='%i'\n", arg_max_oc3);
+		printk(KERN_INFO "[electroactive]: max_oc3='%i'\n", arg_max_oc3);
 		return 1;
 	}
 	
@@ -149,7 +149,7 @@ static int __init get_uv_level(char *vdd_uv)
 
 __setup("vdd_uv=", get_uv_level); 
 
-/** end elementalx defs  **/
+/** end electroactive defs  **/
 
 
 static DEFINE_MUTEX(driver_lock);
@@ -1221,32 +1221,32 @@ static void apply_undervolting(void)
 {
 	if (uv_bin == 6) {
 		drv.acpu_freq_tbl[0].vdd_core = 625000;
-	        printk(KERN_INFO "[elementalx]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
+	        printk(KERN_INFO "[electroactive]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
 	}
 
 	if (uv_bin == 5) {
 		drv.acpu_freq_tbl[0].vdd_core = 650000;
-	        printk(KERN_INFO "[elementalx]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
+	        printk(KERN_INFO "[electroactive]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
 	}
 
 	if (uv_bin == 4) {
 		drv.acpu_freq_tbl[0].vdd_core = 675000;
-	        printk(KERN_INFO "[elementalx]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
+	        printk(KERN_INFO "[electroactive]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
 	}
 
 	if (uv_bin == 3) {
 		drv.acpu_freq_tbl[0].vdd_core = 700000;
-	        printk(KERN_INFO "[elementalx]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
+	        printk(KERN_INFO "[electroactive]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
 	}
 
 	if (uv_bin == 2) {
 		drv.acpu_freq_tbl[0].vdd_core = 725000;
-	        printk(KERN_INFO "[elementalx]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
+	        printk(KERN_INFO "[electroactive]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
 	}
 
 	if (uv_bin == 1) {
 		drv.acpu_freq_tbl[0].vdd_core = 750000;
-		printk(KERN_INFO "[elementalx]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
+		printk(KERN_INFO "[electroactive]: min_voltage='%i'\n", drv.acpu_freq_tbl[0].vdd_core );
 	}
 }
 
