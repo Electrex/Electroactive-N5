@@ -63,9 +63,9 @@ static u64 electroactive_freq_boosted_time;
 
 #define DEFAULT_SAMPLING_RATE			(40000)
 #define BOOSTED_SAMPLING_RATE			(20000)
-#define LATENCY_MULTIPLIER			  (1000)
-#define MIN_LATENCY_MULTIPLIER		(100)
-#define TRANSITION_LATENCY_LIMIT	(10 * 1000 * 1000)
+#define LATENCY_MULTIPLIER			(1000)
+#define MIN_LATENCY_MULTIPLIER		        (100)
+#define TRANSITION_LATENCY_LIMIT	        (10 * 1000 * 1000)
 
 /* have the timer rate booted for this much time 4s*/
 #define TIMER_RATE_BOOST_TIME 4000000
@@ -160,7 +160,7 @@ static struct dbs_tuners {
 	unsigned int ui_sampling_rate;
 	unsigned int input_event_timeout;
 	int gboost;
-  unsigned int boosted;
+        unsigned int boosted;
 	unsigned int freq_boost_time;
 	unsigned int boostfreq;
 	unsigned int freq_step;
@@ -168,7 +168,7 @@ static struct dbs_tuners {
 } dbs_tuners_ins = {
 	.up_threshold_multi_core = DEF_FREQUENCY_UP_THRESHOLD,
 	.up_threshold = DEF_FREQUENCY_UP_THRESHOLD,
-  .up_threshold_min_freq = MIN_FREQUENCY_UP_THRESHOLD,
+        .up_threshold_min_freq = MIN_FREQUENCY_UP_THRESHOLD,
 	.sampling_down_factor = DEF_SAMPLING_DOWN_FACTOR,
 	.down_differential = DEF_FREQUENCY_DOWN_DIFFERENTIAL,
 	.down_differential_multi_core = MICRO_FREQUENCY_DOWN_DIFFERENTIAL,
@@ -181,7 +181,7 @@ static struct dbs_tuners {
 	.ui_sampling_rate = UI_DYNAMIC_SAMPLING_RATE,
 	.input_event_timeout = INPUT_EVENT_TIMEOUT,
 	.gboost = 1,
-  .freq_boost_time = DEFAULT_FREQ_BOOST_TIME,
+        .freq_boost_time = DEFAULT_FREQ_BOOST_TIME,
 	.boostfreq = 2265600,
 	.freq_step = FREQ_STEP,
 	.freq_responsiveness = FREQ_FOR_RESPONSIVENESS
@@ -707,7 +707,7 @@ static struct attribute *dbs_attributes[] = {
 	&sampling_rate_min.attr,
 	&sampling_rate.attr,
 	&up_threshold.attr,
-  &up_threshold_min_freq.attr,
+        &up_threshold_min_freq.attr,
 	&down_differential.attr,
 	&sampling_down_factor.attr,
 	&ignore_nice_load.attr,
@@ -720,7 +720,7 @@ static struct attribute *dbs_attributes[] = {
 	&ui_sampling_rate.attr,
 	&input_event_timeout.attr,
 	&gboost.attr,
-  &boostpulse.attr,
+        &boostpulse.attr,
 	&boostfreq.attr,
 	&freq_step.attr,
 	&freq_responsiveness.attr,
