@@ -197,6 +197,7 @@ config CPU_FREQ_DEFAULT_GOV_UBERDEMAND
 config CPU_FREQ_DEFAULT_GOV_ELECTROACTIVE
 	bool "electroactive"
 	select CPU_FREQ_GOV_ELECTROACTIVE
+        select CPU_FREQ_GOV_PERFORMANCE
 	help
 	  Use the CPUFreq governor 'electroactive' as default. This allows
 	  you to get a full dynamic cpu frequency capable system by simply
@@ -465,8 +466,8 @@ config CPU_FREQ_GOV_UBERDEMAND
 	  transitions).
 
 config CPU_FREQ_GOV_ELECTROACTIVE
-	tristate "'electroactive' cpufreq governor"
-	depends on CPU_FREQ
+	tristate "'electroactive' cpufreq policy governor"
+        select CPU_FREQ_TABLE
 	help
 	  'electroactive' - A tweaked "ondemand" based smart and smooth optimized
            governor designed for optimization in transition and a balance between
