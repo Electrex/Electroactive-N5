@@ -469,9 +469,9 @@ config CPU_FREQ_GOV_ELECTROACTIVE
 	tristate "'electroactive' cpufreq policy governor"
         select CPU_FREQ_TABLE
 	help
-	  'electroactive' - A tweaked "ondemand" based smart and smooth optimized
-           governor designed for optimization in transition and a balance between
-           performance and power.
+	  'electroactive' - A tweaked hybrid interactive + ondemand based smart 
+	   and smooth optimized governor designed for optimization in transition,
+	   performance and power.
 	
 	   If in doubt, say N.
 
