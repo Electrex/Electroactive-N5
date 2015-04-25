@@ -4,7 +4,7 @@
  *  Copyright (C)  2001 Russell King
  *            (C)  2003 Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>.
  *                      Jun Nakajima <jun.nakajima@intel.com>
- *	          (C)  2013 flar2 <asegaert@gmail.com>
+ *	      (C)  2013 flar2 <asegaert@gmail.com>
  *            (C)  2015 Electrex <ymostafa30@gmail.com>
  *
  * Hybrid based interactive + ondemand, optimized for battery, performance, and power
@@ -34,28 +34,28 @@
 static int orig_up_threshold = 90;
 static int g_count = 0;
 
-#define DEF_SAMPLING_RATE			             (30000)
-#define DEF_FREQUENCY_DOWN_DIFFERENTIAL	   (10)
-#define DEF_FREQUENCY_UP_THRESHOLD		     (90)
-#define DEF_SAMPLING_DOWN_FACTOR		       (1)
-#define BOOSTED_SAMPLING_DOWN_FACTOR		   (40)
-#define MAX_SAMPLING_DOWN_FACTOR		       (100000)
-#define MICRO_FREQUENCY_DOWN_DIFFERENTIAL  (3)
-#define MICRO_FREQUENCY_UP_THRESHOLD		   (95)
-#define MICRO_FREQUENCY_MIN_SAMPLE_RATE		 (10000)
-#define MIN_FREQUENCY_UP_THRESHOLD		     (11)
-#define MAX_FREQUENCY_UP_THRESHOLD		     (100)
-#define MIN_FREQUENCY_DOWN_DIFFERENTIAL		 (1)
-#define UI_DYNAMIC_SAMPLING_RATE		       (15000)
-#define DBS_SWITCH_MODE_TIMEOUT			       (1000)
-#define INPUT_EVENT_MIN_TIMEOUT 		       (0)
-#define INPUT_EVENT_MAX_TIMEOUT 	     	   (3000)
-#define INPUT_EVENT_TIMEOUT		 	           (500)
-#define MIN_SAMPLING_RATE_RATIO			       (2)
-#define FREQ_STEP				                   (55)
-#define DEFAULT_FREQ_BOOST_TIME			       (500000)
-#define MAX_FREQ_BOOST_TIME			           (5000000)
-#define FREQ_FOR_RESPONSIVENESS			       (300000)
+#define DEF_SAMPLING_RATE			(30000)
+#define DEF_FREQUENCY_DOWN_DIFFERENTIAL		(10)
+#define DEF_FREQUENCY_UP_THRESHOLD		(90)
+#define DEF_SAMPLING_DOWN_FACTOR		(1)
+#define BOOSTED_SAMPLING_DOWN_FACTOR		(40)
+#define MAX_SAMPLING_DOWN_FACTOR		(100000)
+#define MICRO_FREQUENCY_DOWN_DIFFERENTIAL	(3)
+#define MICRO_FREQUENCY_UP_THRESHOLD		(95)
+#define MICRO_FREQUENCY_MIN_SAMPLE_RATE		(10000)
+#define MIN_FREQUENCY_UP_THRESHOLD		(11)
+#define MAX_FREQUENCY_UP_THRESHOLD		(100)
+#define MIN_FREQUENCY_DOWN_DIFFERENTIAL		(1)
+#define UI_DYNAMIC_SAMPLING_RATE		(15000)
+#define DBS_SWITCH_MODE_TIMEOUT			(1000)
+#define INPUT_EVENT_MIN_TIMEOUT 		(0)
+#define INPUT_EVENT_MAX_TIMEOUT 		(3000)
+#define INPUT_EVENT_TIMEOUT			(500)
+#define MIN_SAMPLING_RATE_RATIO			(2)
+#define FREQ_STEP				(55)
+#define DEFAULT_FREQ_BOOST_TIME			(500000)
+#define MAX_FREQ_BOOST_TIME			(5000000)
+#define FREQ_FOR_RESPONSIVENESS			(300000)
 
 static unsigned int min_sampling_rate;
 static unsigned int skip_electroactive = 0;
