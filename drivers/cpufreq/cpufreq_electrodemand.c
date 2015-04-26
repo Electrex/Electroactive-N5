@@ -1,5 +1,5 @@
 /*
- *  drivers/cpufreq/cpufreq_electroactive.c
+ *  drivers/cpufreq/cpufreq_electrodemand.c
  *
  *  Copyright (C)  2001 Russell King
  *            (C)  2003 Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>.
@@ -51,7 +51,7 @@
 #define UP_THRESHOLD_AT_MIN_FREQ		(40)
 #define FREQ_FOR_RESPONSIVENESS			(2265600)
 
-static u64 electroactive_freq_boosted_time;
+static u64 electrodemand_freq_boosted_time;
 
 /*
  * The polling frequency of this governor depends on the capability of
@@ -74,19 +74,19 @@ static unsigned int min_sampling_rate;
 
 /* have the timer rate booted for this much time 4s*/
 #define TIMER_RATE_BOOST_TIME 4000000
-static int electroactive_sampling_rate_boosted;
-static u64 electroactive_sampling_rate_boosted_time;
-unsigned int electroactive_current_sampling_rate;
+static int electrodemand_sampling_rate_boosted;
+static u64 electrodemand_sampling_rate_boosted_time;
+unsigned int electrodemand_current_sampling_rate;
 
 static void do_dbs_timer(struct work_struct *work);
 static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 				unsigned int event);
 
-#ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_ELECTROACTIVE
+#ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_electrodemand
 static
 #endif
-struct cpufreq_governor cpufreq_gov_electroactive = {
-       .name                   = "electroactive",
+struct cpufreq_governor cpufreq_gov_electrodemand = {
+       .name                   = "electrodemand",
        .governor               = cpufreq_governor_dbs,
        .max_transition_latency = TRANSITION_LATENCY_LIMIT,
        .owner                  = THIS_MODULE,
@@ -272,18 +272,18 @@ static unsigned int powersave_bias_target(struct cpufreq_policy *policy,
 	return freq_hi;
 }
 
-static void electroactive_powersave_bias_init_cpu(int cpu)
+static void electrodemand_powersave_bias_init_cpu(int cpu)
 {
 	struct cpu_dbs_info_s *dbs_info = &per_cpu(od_cpu_dbs_info, cpu);
 	dbs_info->freq_table = cpufreq_frequency_get_table(cpu);
 	dbs_info->freq_lo = 0;
 }
 
-static void electroactive_powersave_bias_init(void)
+static void electrodemand_powersave_bias_init(void)
 {
 	int i;
 	for_each_online_cpu(i) {
-		electroactive_powersave_bias_init_cpu(i);
+		electrodemand_powersave_bias_init_cpu(i);
 	}
 }
 
@@ -297,7 +297,7 @@ static ssize_t show_sampling_rate_min(struct kobject *kobj,
 
 define_one_global_ro(sampling_rate_min);
 
-/* cpufreq_electroactive_power Governor Tunables */
+/* cpufreq_electrodemand_power Governor Tunables */
 #define show_one(file_name, object)					\
 static ssize_t show_##file_name						\
 (struct kobject *kobj, struct attribute *attr, char *buf)              \
@@ -423,11 +423,11 @@ static ssize_t store_boostpulse(struct kobject *kobj, struct attribute *attr,
 		dbs_tuners_ins.freq_boost_time = DEFAULT_FREQ_BOOST_TIME;
 
 	dbs_tuners_ins.boosted = 1;
-	electroactive_freq_boosted_time = ktime_to_us(ktime_get());
+	electrodemand_freq_boosted_time = ktime_to_us(ktime_get());
 
-	if (electroactive_sampling_rate_boosted) {
-		electroactive_sampling_rate_boosted = 0;
-		dbs_tuners_ins.sampling_rate = electroactive_current_sampling_rate;
+	if (electrodemand_sampling_rate_boosted) {
+		electrodemand_sampling_rate_boosted = 0;
+		dbs_tuners_ins.sampling_rate = electrodemand_current_sampling_rate;
 	}
 	return count;
 }
@@ -457,7 +457,7 @@ static ssize_t store_sampling_rate(struct kobject *a, struct attribute *b,
 		return -EINVAL;
 
 	update_sampling_rate(input);
-	electroactive_current_sampling_rate = dbs_tuners_ins.sampling_rate;
+	electrodemand_current_sampling_rate = dbs_tuners_ins.sampling_rate;
 
 	return count;
 }
@@ -605,7 +605,7 @@ static ssize_t store_powersave_bias(struct kobject *a, struct attribute *b,
 		input = 1000;
 
 	dbs_tuners_ins.powersave_bias = input;
-	electroactive_powersave_bias_init();
+	electrodemand_powersave_bias_init();
 
 	return count;
 }
@@ -679,7 +679,7 @@ static struct attribute *dbs_attributes[] = {
 
 static struct attribute_group dbs_attr_group = {
 	.attrs = dbs_attributes,
-	.name = "electroactive",
+	.name = "electrodemand",
 };
 
 /************************** sysfs end ************************/
@@ -715,19 +715,19 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 	/* Only core0 controls the boost */
 	if (dbs_tuners_ins.boosted && policy->cpu == 0) {
-		if (ktime_to_us(ktime_get()) - electroactive_freq_boosted_time >=
+		if (ktime_to_us(ktime_get()) - electrodemand_freq_boosted_time >=
 					dbs_tuners_ins.freq_boost_time) {
 			dbs_tuners_ins.boosted = 0;
 		}
 	}
 
 	/* Only core0 controls the timer_rate */
-	if (electroactive_sampling_rate_boosted && policy->cpu == 0) {
-		if (ktime_to_us(ktime_get()) - electroactive_sampling_rate_boosted_time >=
+	if (electrodemand_sampling_rate_boosted && policy->cpu == 0) {
+		if (ktime_to_us(ktime_get()) - electrodemand_sampling_rate_boosted_time >=
 					TIMER_RATE_BOOST_TIME) {
 
-			dbs_tuners_ins.sampling_rate = electroactive_current_sampling_rate;
-			electroactive_sampling_rate_boosted = 0;
+			dbs_tuners_ins.sampling_rate = electrodemand_current_sampling_rate;
+			electrodemand_sampling_rate_boosted = 0;
 		}
 	}
 
@@ -867,7 +867,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 		/* If switching to max speed, apply sampling_down_factor */
 		if (policy->cur < policy->max && target == policy->max) {
-			if (electroactive_sampling_rate_boosted &&
+			if (electrodemand_sampling_rate_boosted &&
 				(dbs_tuners_ins.sampling_down_factor <
 					BOOSTED_SAMPLING_DOWN_FACTOR)) {
 				this_dbs_info->rate_mult =
@@ -1041,7 +1041,7 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 		}
 		this_dbs_info->cpu = cpu;
 		this_dbs_info->rate_mult = 1;
-		electroactive_powersave_bias_init_cpu(cpu);
+		electrodemand_powersave_bias_init_cpu(cpu);
 		/*
 		 * Start the timerschedule work, when this governor
 		 * is used for first time
@@ -1132,7 +1132,7 @@ static int __init cpufreq_gov_dbs_init(void)
 			MIN_SAMPLING_RATE_RATIO * jiffies_to_usecs(10);
 	}
 
-	err = cpufreq_register_governor(&cpufreq_gov_electroactive);
+	err = cpufreq_register_governor(&cpufreq_gov_electrodemand);
 	if (err) {
 		goto error_reg;
 	}
@@ -1145,17 +1145,17 @@ error_reg:
 
 static void __exit cpufreq_gov_dbs_exit(void)
 {
-	cpufreq_unregister_governor(&cpufreq_gov_electroactive);
+	cpufreq_unregister_governor(&cpufreq_gov_electrodemand);
 	kfree(&dbs_tuners_ins);
 }
 
 MODULE_AUTHOR("Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>");
 MODULE_AUTHOR("Alexey Starikovskiy <alexey.y.starikovskiy@intel.com>");
-MODULE_DESCRIPTION("'cpufreq_electroactive' - A dynamic cpufreq governor for "
+MODULE_DESCRIPTION("'cpufreq_electrodemand' - A dynamic cpufreq governor for "
 	"Low Latency Frequency Transition capable processors, based off of ondemand");
 MODULE_LICENSE("GPLv2");
 
-#ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_ELECTROACTIVE
+#ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_ELECTRODEMAND
 fs_initcall(cpufreq_gov_dbs_init);
 #else
 module_init(cpufreq_gov_dbs_init);
