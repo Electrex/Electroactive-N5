@@ -3035,20 +3035,6 @@ config MSM_SLEEPER
 	help
 	  CPU hotplug driver 
 	  
-config ALUCARD_HOTPLUG
-	bool "Enable alucard-hotplug cpu hotplug driver"
-	default y
-	help
-	  Generic Alucard-hotplug cpu hotplug driver for ARM SOCs
-	  
-config MSM_HOTPLUG
-	bool "MSM hotplug driver"
-	depends on HOTPLUG_CPU
-	default y
-	help
-	  The MSM hotplug driver controls on-/offlining of additional cores based
-	  on current cpu load.
-	  
 config INTELLI_PLUG
 	bool "Intelli hotplug driver"
 	depends on HOTPLUG_CPU
