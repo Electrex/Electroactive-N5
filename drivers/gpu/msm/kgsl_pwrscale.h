@@ -35,6 +35,7 @@ struct kgsl_pwrscale_policy  {
 struct kgsl_pwrscale {
 	struct kgsl_pwrscale_policy *policy;
 	struct kobject kobj;
+        struct srcu_notifier_head nh;
 	void *priv;
 	int enabled;
 };

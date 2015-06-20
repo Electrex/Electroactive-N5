@@ -260,6 +260,51 @@ void kgsl_pwrscale_enable(struct kgsl_device *device)
 }
 EXPORT_SYMBOL(kgsl_pwrscale_enable);
 
+/*
+ * kgsl_devfreq_add_notifier - add a fine grained notifier.
+ * @dev: The device
+ * @nb: Notifier block that will recieve updates.
+ *
+ * Add a notifier to recieve ADRENO_DEVFREQ_NOTIFY_* events
+ * from the device.
+ */
+int kgsl_devfreq_add_notifier(struct device *dev,
+		struct notifier_block *nb)
+{
+	struct kgsl_device *device = dev_get_drvdata(dev);
+
+	if (device == NULL)
+		return -ENODEV;
+
+	if (nb == NULL)
+		return -EINVAL;
+
+	return srcu_notifier_chain_register(&device->pwrscale.nh, nb);
+}
+EXPORT_SYMBOL(kgsl_devfreq_add_notifier);
+
+/*
+ * kgsl_devfreq_del_notifier - remove a fine grained notifier.
+ * @dev: The device
+ * @nb: The notifier block.
+ *
+ * Remove a notifier registered with kgsl_devfreq_add_notifier().
+ */
+int kgsl_devfreq_del_notifier(struct device *dev, struct notifier_block *nb)
+{
+	struct kgsl_device *device = dev_get_drvdata(dev);
+
+	if (device == NULL)
+		return -ENODEV;
+
+	if (nb == NULL)
+		return -EINVAL;
+
+	return srcu_notifier_chain_unregister(&device->pwrscale.nh, nb);
+}
+EXPORT_SYMBOL(kgsl_devfreq_del_notifier);
+
+
 int kgsl_pwrscale_policy_add_files(struct kgsl_device *device,
 				   struct kgsl_pwrscale *pwrscale,
 				   struct attribute_group *attr_group)
