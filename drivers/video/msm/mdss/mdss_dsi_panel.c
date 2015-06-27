@@ -54,6 +54,8 @@ static int mdss_panel_id = PANEL_QCOM;
 
 DEFINE_LED_TRIGGER(bl_led_trigger);
 
+bool mdss_screen_on = true;
+
 #if defined(CONFIG_BACKLIGHT_LM3630)
 extern void lm3630_lcd_backlight_set_level(int level);
 #endif
@@ -333,6 +335,7 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 		return -EINVAL;
 	}
 
+        mdss_screen_on = true;
 	ctrl = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
 	mipi  = &pdata->panel_info.mipi;
@@ -400,6 +403,8 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
 
 	if (ctrl->off_cmds.cmd_cnt)
 		mdss_dsi_panel_cmds_send(ctrl, &ctrl->off_cmds);
+
+        mdss_screen_on = false;
 
 	pr_info("%s:\n", __func__);
 	return 0;
