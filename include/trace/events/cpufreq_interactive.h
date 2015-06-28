@@ -34,13 +34,6 @@ DEFINE_EVENT(set, cpufreq_interactive_setspeed,
 	TP_ARGS(cpu_id, targfreq, actualfreq)
 );
 
-#ifdef CONFIG_CPU_FREQ_GOV_ELEMENTALX
-DEFINE_EVENT(set, cpufreq_interactive_up,
-	TP_PROTO(u32 cpu_id, unsigned long targfreq,
-	     unsigned long actualfreq),
-	TP_ARGS(cpu_id, targfreq, actualfreq)
-);
-
 #ifdef CONFIG_CPU_FREQ_GOV_ELECTROACTIVE
 DEFINE_EVENT(set, cpufreq_interactive_up,
 	TP_PROTO(u32 cpu_id, unsigned long targfreq,

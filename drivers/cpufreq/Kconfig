@@ -215,16 +215,6 @@ config CPU_FREQ_DEFAULT_GOV_ELECTRODEMAND
 	  loading your cpufreq low-level hardware driver, using the
 	  'electrodemand' governor for latency-sensitive workloads.
 
-config CPU_FREQ_DEFAULT_GOV_HYPER
-	bool "hyper"
-	select CPU_FREQ_GOV_HYPER
-	---help---
-	  Use the CPUFreq governor 'hyper' as default. This allows
-	  you to get a full dynamic cpu frequency capable system by simply
-	  loading your cpufreq low-level hardware driver, using the
-	  'hyper' governor for latency-sensitive workloads.
-
-
 config CPU_FREQ_DEFAULT_GOV_OPTIMAX
 	bool "optimax"
 	select CPU_FREQ_GOV_OPTIMAX
@@ -503,14 +493,6 @@ config CPU_FREQ_GOV_ELECTRODEMAND
 	  'electrodemand' - A tweaked "ondemand" based smart and smooth optimized
            governor designed for optimization in transition and a balance between
            performance and power.
-	
-	   If in doubt, say N.
-
-config CPU_FREQ_GOV_HYPER
-	tristate "'hyper' cpufreq governor"
-	depends on CPU_FREQ
-	---help---
-	  'hyper' - A tweaked "ondemand" based smart and smooth optimized governor!
 	
 	   If in doubt, say N.
 

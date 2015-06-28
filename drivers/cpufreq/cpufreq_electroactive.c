@@ -4,10 +4,8 @@
  *  Copyright (C)  2001 Russell King
  *            (C)  2003 Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>.
  *                      Jun Nakajima <jun.nakajima@intel.com>
- *	      (C)  2013 flar2 <asegaert@gmail.com>
  *            (C)  2015 Electrex <ymostafa30@gmail.com>
  *
- * Hybrid based interactive + ondemand, optimized for battery, performance, and power
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -1807,10 +1805,8 @@ static void __exit cpufreq_gov_dbs_exit(void)
 	}
 }
 
-MODULE_AUTHOR("Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>");
-MODULE_AUTHOR("Alexey Starikovskiy <alexey.y.starikovskiy@intel.com>");
-MODULE_AUTHOR("Electrex <ymostafa30@gmail.com>");
-MODULE_DESCRIPTION("'cpufreq_electroactive' - multiphase dynamic-hybrid cpufreq governor");
+MODULE_AUTHOR("Yusuf Mostafa <ymostafa30@gmail.com>");
+MODULE_DESCRIPTION("'cpufreq_electroactive' - multiphase dynamic cpufreq governor");
 MODULE_LICENSE("GPL");
 
 #ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_ELECTROACTIVE
