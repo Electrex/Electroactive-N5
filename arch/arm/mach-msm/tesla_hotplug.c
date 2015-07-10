@@ -57,7 +57,9 @@
 #endif
 
 #define CAPACITY_RESERVE		50
-#if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064) || \
+#if defined(CONFIG_ARCH_APQ8084) || defined(CONFIG_ARM64)
+#define THREAD_CAPACITY (430 - CAPACITY_RESERVE)
+#elif defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064) || \
 defined(CONFIG_ARCH_MSM8974)
 #define THREAD_CAPACITY			(339 - CAPACITY_RESERVE)
 #elif defined(CONFIG_ARCH_MSM8226) || defined (CONFIG_ARCH_MSM8926) || \
@@ -70,9 +72,9 @@ defined (CONFIG_ARCH_MSM8610) || defined (CONFIG_ARCH_MSM8228)
 					(THREAD_CAPACITY / 2))
 #define MULT_FACTOR			4
 #define DIV_FACTOR			100000
-#define INIT_DELAY	(60 * HZ) /* Initial delay to 60 sec */
+#define INIT_DELAY	(60 * HZ) /* Initial delay to 60 sec, 4 cores while boot */
 #define DELAY		(HZ / 2)
-#define UP_THRESHOLD	(20)
+#define UP_THRESHOLD	(80)
 
 static int enabled;
 static unsigned int up_threshold;
@@ -119,6 +121,9 @@ static inline void up_all(bool lim)
 		if (!cpu_online(cpu))
 			cpu_up(cpu);
 }
+
+//default to something sane rather than zero
+static unsigned int sampling_time = DEF_SAMPLING_MS;
 
 struct ip_cpu_info {
 	unsigned long cpu_nr_running;
@@ -527,6 +532,64 @@ static void tesla_plug_work_fn(struct work_struct *work)
 		queue_delayed_work_on(0, teslaplug_wq, &tesla_plug_work,
 					msecs_to_jiffies(def_sampling_ms));
 }
+
+void __ref tesla_plug_perf_boost(bool on)
+{
+ 	unsigned int cpu;
+ 
+ 	if (atomic_read(&tesla_plug_active) == 1) {
+ 		flush_workqueue(teslaplug_wq);
+ 		if (on) {
+ 			for_each_possible_cpu(cpu) {
+ 				if (!cpu_online(cpu))
+ 					cpu_up(cpu);
+ 			}
+ 		} else {
+ 			queue_delayed_work_on(0, teslaplug_wq,
+ 				&tesla_plug_work,
+ 				msecs_to_jiffies(sampling_time));
+ 		}
+ 	}
+}
+
+/* sysfs interface for performance boost (BEGIN) */
+static ssize_t tesla_plug_perf_boost_store(struct kobject *kobj,
+			struct kobj_attribute *attr, const char *buf,
+			size_t count)
+{
+
+	int boost_req;
+
+	sscanf(buf, "%du", &boost_req);
+
+	switch(boost_req) {
+		case 0:
+			tesla_plug_perf_boost(0);
+			return count;
+		case 1:
+			tesla_plug_perf_boost(1);
+			return count;
+		default:
+			return -EINVAL;
+	}
+}
+
+static struct kobj_attribute tesla_plug_perf_boost_attribute =
+	__ATTR(perf_boost, 0220,
+		NULL,
+		tesla_plug_perf_boost_store);
+
+static struct attribute *tesla_plug_perf_boost_attrs[] = {
+	&tesla_plug_perf_boost_attribute.attr,
+	NULL,
+};
+
+static struct attribute_group tesla_plug_perf_boost_attr_group = {
+	.attrs = tesla_plug_perf_boost_attrs,
+};
+
+static struct kobject *tesla_plug_perf_boost_kobj;
+/* sysfs interface for performance boost (END) */
 
 #if defined(CONFIG_LCD_NOTIFY) || \
 	defined(CONFIG_POWERSUSPEND) || \
@@ -1115,6 +1178,19 @@ static int __init tesla_plug_init(void)
 
 	if (atomic_read(&tesla_plug_active) == 1)
 		tesla_plug_start();
+
+        tesla_plug_perf_boost_kobj
+		= kobject_create_and_add("tesla_plug", kernel_kobj);
+
+	if (!tesla_plug_perf_boost_kobj) {
+		return -ENOMEM;
+	}
+
+	rc = sysfs_create_group(tesla_plug_perf_boost_kobj,
+				&tesla_plug_perf_boost_attr_group);
+
+	if (rc)
+		kobject_put(tesla_plug_perf_boost_kobj);
 
 	return 0;
 }
