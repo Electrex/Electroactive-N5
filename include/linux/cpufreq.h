@@ -102,6 +102,7 @@ struct cpufreq_policy {
 	unsigned int		cur;    /* in kHz, only needed if cpufreq
 					 * governors are used */
 	unsigned int            util;  /* CPU utilization at max frequency */
+        unsigned int		util_thres; /* Threshold to increase utilization*/
 	unsigned int		policy; /* see above */
 	struct cpufreq_governor	*governor; /* see below */
 

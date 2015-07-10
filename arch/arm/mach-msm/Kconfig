@@ -3046,6 +3046,14 @@ config INTELLI_PLUG
 	  An intelligent cpu hotplug driver for
 	  Low Latency Frequency Transition capable processors.
 
+config TESLA_HOTPLUG
+	bool "Tesla hotplug driver"
+	depends on HOTPLUG_CPU
+	default y
+	help
+	  CPU hotplug driver for
+	  Low Latency Frequency Transition capable processors.
+
 config HAS_MACH_MEMUTILS
 	default n
 	bool "Motorola MSM memcpy enhancements"
