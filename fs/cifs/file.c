@@ -1604,6 +1604,7 @@ refind_writable:
 		goto refind_writable;
 	}
 	spin_unlock(&cifs_file_list_lock);
+        return NULL;
 }
 
 static int cifs_partialpagewrite(struct page *page, unsigned from, unsigned to)
