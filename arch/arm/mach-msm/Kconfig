@@ -3049,7 +3049,7 @@ config INTELLI_PLUG
 config TESLA_HOTPLUG
 	bool "Tesla hotplug driver"
 	depends on HOTPLUG_CPU
-	default y
+	default n
 	help
 	  CPU hotplug driver for
 	  Low Latency Frequency Transition capable processors.
