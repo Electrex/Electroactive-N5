@@ -12,7 +12,14 @@
  */
 
 #include <linux/kernel.h>
+#include <linux/fs.h>
+#include <linux/types.h>
+#include <linux/device.h>
+#include <linux/slab.h>
 #include <linux/init.h>
+#include <linux/uaccess.h>
+#include <linux/cdev.h>
+#include <linux/semaphore.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/msm_tsens.h>
@@ -21,19 +28,24 @@
 #include <linux/reboot.h>
 #include <linux/cpufreq.h>
 #include <linux/msm_tsens.h>
+#include <linux/msm_thermal_ioctl.h>
 #include <linux/msm_thermal.h>
 #include <linux/platform_device.h>
 #include <linux/of.h>
 #include <linux/io.h>
 #include <linux/hrtimer.h>
 #include <mach/cpufreq.h>
-#include <linux/msm_thermal_ioctl.h>
 #ifdef CONFIG_MSM_MPDEC_INPUTBOOST_CPUMIN
 #include "../../arch/arm/mach-msm/msm_mpdecision.h"
 #endif
 
 #define BYTES_PER_FUSE_ROW  8
 #define MAX_EFUSE_VALUE  16
+
+struct msm_thermal_ioctl_dev {
+	struct semaphore sem;
+	struct cdev char_dev;
+};
 
 static DEFINE_MUTEX(emergency_shutdown_mutex);
 static uint32_t default_cpu_temp_limit;
@@ -42,6 +54,9 @@ static bool default_temp_limit_probed;
 static bool default_temp_limit_nodes_called;
 
 static int enabled;
+static int msm_thermal_major;
+static struct class *thermal_class;
+static struct msm_thermal_ioctl_dev *msm_thermal_dev;
 
 //Throttling indicator, 0=not throttled, 1=low, 2=mid, 3=max
 int msm_thermal_x_throttled = 0;
@@ -558,6 +573,25 @@ static int set_enabled(const char *val, const struct kernel_param *kp)
     pr_info("msm_thermal: enabled = %d\n", enabled);
 
     return ret;
+}
+
+void msm_thermal_ioctl_cleanup()
+{
+	dev_t thermal_dev = MKDEV(msm_thermal_major, 0);
+
+	if (!msm_thermal_dev) {
+		pr_err("%s: Thermal IOCTL cleanup already done\n",
+			KBUILD_MODNAME);
+		return;
+	}
+
+	device_destroy(thermal_class, thermal_dev);
+	class_destroy(thermal_class);
+	cdev_del(&msm_thermal_dev->char_dev);
+	unregister_chrdev_region(thermal_dev, 1);
+	kfree(msm_thermal_dev);
+	msm_thermal_dev = NULL;
+	thermal_class = NULL;
 }
 
 static struct kernel_param_ops module_ops = {
