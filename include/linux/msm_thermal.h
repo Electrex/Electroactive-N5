@@ -36,6 +36,8 @@ struct msm_thermal_data {
 	uint32_t allowed_low_high;
 	uint32_t allowed_low_low;
 	uint32_t allowed_low_freq;
+        int32_t ocr_temp_degC;
+	int32_t ocr_temp_hyst_degC;
 };
 
 struct msm_thermal_stat {
