@@ -729,6 +729,10 @@ static ssize_t store_powersave_bias(struct kobject *a, struct attribute *b,
 				POWERSAVE_BIAS_MINLEVEL));
 
 	dbs_tuners_ins.powersave_bias = input;
+
+        mutex_lock(&dbs_mutex);
+        get_online_cpus();
+
 	if (!bypass) {
 		if (reenable_timer) {
 
@@ -778,21 +782,24 @@ skip_this_cpu:
 			cpumask_set_cpu(cpu, &cpus_timer_done);
 
 			if (dbs_info->cur_policy) {
-
-				mutex_lock(&dbs_info->timer_mutex);
+                                /* cpu using electroactive, cancel dbs timer */
 				dbs_timer_exit(dbs_info);
 
+                                mutex_lock(&dbs_info->timer_mutex);
 				electroactive_powersave_bias_setspeed(
 					dbs_info->cur_policy,
 					NULL,
 					input);
-
 				mutex_unlock(&dbs_info->timer_mutex);
+
 			}
 skip_this_cpu_bypass:
 			unlock_policy_rwsem_write(cpu);
 		}
 	}
+
+        put_online_cpus();
+        mutex_unlock(&dbs_mutex);
 
 	return count;
 }
