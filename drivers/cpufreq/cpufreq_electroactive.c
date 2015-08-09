@@ -103,8 +103,11 @@ static DEFINE_PER_CPU(struct cpu_dbs_info_s, od_cpu_dbs_info);
 static inline void dbs_timer_init(struct cpu_dbs_info_s *dbs_info);
 static inline void dbs_timer_exit(struct cpu_dbs_info_s *dbs_info);
 
-static unsigned int dbs_enable;
+static unsigned int dbs_enable;	/* number of CPUs using this policy */
 
+/*
+ * dbs_mutex protects dbs_enable and dbs_info during start/stop.
+ */
 static DEFINE_PER_CPU(struct task_struct *, up_task);
 static spinlock_t input_boost_lock;
 static bool input_event_boost = false;
@@ -661,9 +664,13 @@ static ssize_t store_powersave_bias(struct kobject *a, struct attribute *b,
 				POWERSAVE_BIAS_MINLEVEL));
 
 	dbs_tuners_ins.powersave_bias = input;
+
+        mutex_lock(&dbs_mutex);
+        get_online_cpus();
+
 	if (!bypass) {
 		if (reenable_timer) {
-
+                        /* reinstate dbs timer */
 			for_each_online_cpu(cpu) {
 				if (lock_policy_rwsem_write(cpu) < 0)
 					continue;
@@ -691,6 +698,8 @@ skip_this_cpu:
 		}
 		electroactive_powersave_bias_init();
 	} else {
+                /* running at maximum or minimum frequencies; cancel
+ 		   dbs timer as periodic load sampling is not necessary */
 		for_each_online_cpu(cpu) {
 			if (lock_policy_rwsem_write(cpu) < 0)
 				continue;
@@ -710,21 +719,24 @@ skip_this_cpu:
 			cpumask_set_cpu(cpu, &cpus_timer_done);
 
 			if (dbs_info->cur_policy) {
-
-				mutex_lock(&dbs_info->timer_mutex);
+                                /* cpu using electroactive, cancel dbs timer */
 				dbs_timer_exit(dbs_info);
 
+                                mutex_lock(&dbs_info->timer_mutex);
 				electroactive_powersave_bias_setspeed(
 					dbs_info->cur_policy,
 					NULL,
 					input);
-
 				mutex_unlock(&dbs_info->timer_mutex);
+
 			}
 skip_this_cpu_bypass:
 			unlock_policy_rwsem_write(cpu);
 		}
 	}
+
+        put_online_cpus();
+        mutex_unlock(&dbs_mutex);
 
 	return count;
 }
